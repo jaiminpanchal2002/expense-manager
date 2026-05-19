@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Expenses</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 800px;
+            margin: 2em auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>My Expenses</h1>
+    <a class="btn" th:href="@{/expenses/new}">+ Add Expense</a>
+
+    <table style="margin-top: 1em;">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="e : ${expenses}">
+                <td th:text="${e.expenseDate}">2026-05-19</td>
+                <td th:text="${e.title}">Groceries</td>
+                <td th:text="${e.category}">FOOD</td>
+                <td th:text="${e.amount} + ' ' + ${e.currency}">25.00 EUR</td>
+                <td>
+                    <form th:action="@{'/expenses/' + ${e.id} + '/delete'}" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(expenses)}">
+                <td colspan="5" style="text-align:center; color:#888;">No expenses yet.</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

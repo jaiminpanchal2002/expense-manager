@@ -34,4 +34,9 @@ public class Expense {
     private LocalDate expenseDate;
 
     private String note;
+
+    // NEW: each expense belongs to a user
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id")
+    private User user;
 }

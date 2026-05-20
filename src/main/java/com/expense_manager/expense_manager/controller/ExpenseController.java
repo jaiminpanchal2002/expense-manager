@@ -2,53 +2,50 @@ package com.expense_manager.expense_manager.controller;
 
 import com.expense_manager.expense_manager.dto.ExpenseRequest;
 import com.expense_manager.expense_manager.entity.Category;
+import com.expense_manager.expense_manager.entity.User;
 import com.expense_manager.expense_manager.service.ExpenseService;
+import com.expense_manager.expense_manager.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import java.security.Principal;
+import java.time.LocalDate;
 
 @Controller
 @RequestMapping("/expenses")
 @RequiredArgsConstructor
 public class ExpenseController {
-
     private final ExpenseService expenseService;
+    private final UserService userService;
 
-    // GET /expenses → show all expenses
-    @GetMapping
-    public String list(Model model) {
-        model.addAttribute("expenses", expenseService.listAll());
-        return "expenses/list"; // renders templates/expenses/list.html
-    }
-
-    // GET /expenses/new → show the "add expense" form
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-        model.addAttribute("expenseRequest", new ExpenseRequest());
+        ExpenseRequest req = new ExpenseRequest();
+        req.setExpenseDate(LocalDate.now()); // pre-fill today's date
+        model.addAttribute("expenseRequest", req);
         model.addAttribute("categories", Category.values());
         return "expenses/form";
     }
 
-    // POST /expenses → handle form submission
     @PostMapping
     public String create(@Valid @ModelAttribute ExpenseRequest expenseRequest,
-            BindingResult result,
-            Model model) {
+            BindingResult result, Model model, Principal principal) {
         if (result.hasErrors()) {
             model.addAttribute("categories", Category.values());
             return "expenses/form";
         }
-        expenseService.create(expenseRequest);
-        return "redirect:/expenses";
+        User user = userService.getByEmail(principal.getName());
+        expenseService.create(expenseRequest, user);
+        return "redirect:/dashboard";
     }
 
-    // POST /expenses/{id}/delete → delete an expense
     @PostMapping("/{id}/delete")
-    public String delete(@PathVariable Long id) {
-        expenseService.delete(id);
-        return "redirect:/expenses";
+    public String delete(@PathVariable Long id, Principal principal) {
+        User user = userService.getByEmail(principal.getName());
+        expenseService.delete(id, user);
+        return "redirect:/dashboard";
     }
 }

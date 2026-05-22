@@ -50,7 +50,8 @@ public class ExportController {
             emailService.sendReport(to, label, expenseService.buildCsv(expenses), total, user.getName());
             ra.addFlashAttribute("message", "Report for " + label + " sent to " + to);
         } catch (Exception e) {
-            ra.addFlashAttribute("error", "Couldn't send email — check your mail settings.");
+            e.printStackTrace(); // prints the real SMTP error to Render logs
+            ra.addFlashAttribute("error", "Couldn't send email — " + e.getMessage());
         }
         return "redirect:/dashboard?ym=" + ym;
     }

@@ -80,6 +80,7 @@ public class EmailService {
 
     private void sendEmail(String to, String subject, String htmlContent) throws Exception {
 
+        System.out.println("API KEY = " + apiKey);
         MediaType mediaType = MediaType.parse("application/json");
 
         String json = """

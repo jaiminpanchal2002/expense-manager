@@ -1,114 +1,137 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dashboard</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            max-width: 800px;
-            margin: 2em auto;
-        }
-
-        .topbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .month-nav {
-            display: flex;
-            align-items: center;
-            gap: 1em;
-            margin: 1.5em 0;
-        }
-
-        .total {
-            font-size: 1.4em;
-            font-weight: bold;
-            color: #2563eb;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1em;
-        }
-
-        th,
-        td {
-            padding: 8px;
-            border-bottom: 1px solid #ddd;
-            text-align: left;
-        }
-
-        .btn {
-            padding: 6px 12px;
-            background: #2563eb;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-danger {
-            background: #dc2626;
-        }
-
-        .btn-link {
-            color: #2563eb;
-            text-decoration: none;
-        }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
-
 <body>
+<div class="container">
+
     <div class="topbar">
-        <h1>Hi, <span th:text="${userName}">User</span></h1>
+        <h1>Hi, <span th:text="${userName}">User</span><br>
+            <span class="muted" th:text="${userEmail}">email</span></h1>
         <form th:action="@{/logout}" method="post">
             <button type="submit" class="btn btn-danger">Logout</button>
         </form>
     </div>
 
-    <a class="btn" th:href="@{/expenses/new}">+ Add Expense</a>
+    <!-- flash messages -->
+    <div class="alert alert-success" th:if="${message}" th:text="${message}"></div>
+    <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
 
-    <div class="month-nav">
-        <a class="btn-link" th:href="@{/dashboard(ym=${prevMonth})}">&larr; Previous</a>
-        <strong th:text="${monthLabel}">May 2026</strong>
-        <a class="btn-link" th:href="@{/dashboard(ym=${nextMonth})}">Next &rarr;</a>
+    <!-- budget alert -->
+    <div class="alert alert-danger" th:if="${overBudget}">
+        ⚠️ You've reached your monthly budget limit of
+        <span th:text="${limit}">600</span> EUR for <span th:text="${monthLabel}">this month</span>.
     </div>
 
-    <p class="total">Total this month: <span th:text="${total}">0</span></p>
+    <!-- month navigation -->
+    <div class="month-nav">
+        <a th:href="@{/dashboard(ym=${prevMonth})}">← Previous</a>
+        <strong th:text="${monthLabel}">May 2026</strong>
+        <a th:href="@{/dashboard(ym=${nextMonth})}">Next →</a>
+    </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Title</th>
-                <th>Category</th>
-                <th>Amount</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="e : ${expenses}">
-                <td th:text="${e.expenseDate}">2026-05-19</td>
-                <td th:text="${e.title}">Groceries</td>
-                <td th:text="${e.category}">FOOD</td>
-                <td th:text="${e.amount} + ' ' + ${e.currency}">25.00 EUR</td>
-                <td>
-                    <form th:action="@{'/expenses/' + ${e.id} + '/delete'}" method="post" style="display:inline;">
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                </td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(expenses)}">
-                <td colspan="5" style="text-align:center; color:#888;">No expenses this month.</td>
-            </tr>
-        </tbody>
-    </table>
+    <!-- summary cards -->
+    <div class="cards">
+        <div class="card">
+            <div class="label">Total Spent</div>
+            <div class="value" th:text="${total} + ' €'">0 €</div>
+        </div>
+        <div class="card">
+            <div class="label">Budget</div>
+            <div class="value" th:text="${limit} + ' €'">600 €</div>
+        </div>
+        <div class="card">
+            <div class="label">Remaining</div>
+            <div class="value" th:classappend="${overBudget} ? 'red' : 'green'"
+                 th:text="${remaining} + ' €'">0 €</div>
+        </div>
+        <div class="card">
+            <div class="label">Transactions</div>
+            <div class="value" th:text="${count}">0</div>
+        </div>
+    </div>
+
+    <!-- budget progress -->
+    <div class="panel">
+        <h2>Budget Usage — <span th:text="${percent} + '%'">0%</span></h2>
+        <div class="budget-bar">
+            <div th:style="'width:' + (${percent} > 100 ? 100 : ${percent}) + '%;' +
+                           'background:' + (${percent} >= 100 ? '#ef4444' : (${percent} >= 75 ? '#f59e0b' : '#10b981'))">
+            </div>
+        </div>
+    </div>
+
+    <!-- toolbar: add / download / email -->
+    <div class="toolbar">
+        <a class="btn btn-primary" th:href="@{/expenses/new}">+ Add Expense</a>
+        <a class="btn btn-ghost" th:href="@{/expenses/export(ym=${ymValue})}">⬇ Download CSV</a>
+        <form th:action="@{/expenses/email}" method="post">
+            <input type="hidden" name="ym" th:value="${ymValue}">
+            <input type="email" name="to" th:value="${userEmail}" placeholder="Send report to..." required>
+            <button type="submit" class="btn btn-ghost">✉ Email Report</button>
+        </form>
+    </div>
+
+    <!-- category chart -->
+    <div class="panel" th:if="${!#lists.isEmpty(expenses)}">
+        <h2>Spending by Category</h2>
+        <div style="max-width:320px; margin:0 auto;">
+            <canvas id="categoryChart"></canvas>
+        </div>
+    </div>
+
+    <!-- expense table -->
+    <div class="panel">
+        <h2 th:text="'Expenses — ' + ${monthLabel}">Expenses</h2>
+        <table>
+            <thead>
+                <tr><th>Date</th><th>Title</th><th>Category</th><th>Amount</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                <tr th:each="e : ${expenses}">
+                    <td th:text="${e.expenseDate}">2026-05-19</td>
+                    <td th:text="${e.title}">Groceries</td>
+                    <td><span class="pill" th:text="${e.category}">FOOD</span></td>
+                    <td th:text="${e.amount} + ' ' + ${e.currency}">25.00 EUR</td>
+                    <td>
+                        <form th:action="@{'/expenses/' + ${e.id} + '/delete'}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(expenses)}">
+                    <td colspan="5" class="empty">No expenses this month.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script th:inline="javascript">
+    const labels = /*[[${categoryLabels}]]*/ [];
+    const data   = /*[[${categoryData}]]*/ [];
+    if (labels.length > 0) {
+        new Chart(document.getElementById('categoryChart'), {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: ['#6366f1','#10b981','#f59e0b','#ef4444',
+                                      '#3b82f6','#8b5cf6','#ec4899','#14b8a6']
+                }]
+            },
+            options: { plugins: { legend: { position: 'bottom' } } }
+        });
+    }
+</script>
 </body>
-
 </html>

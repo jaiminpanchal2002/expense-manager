@@ -1,0 +1,351 @@
+:root {
+    --bg: #0f172a;
+    --surface: #ffffff;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --text: #1e293b;
+    --radius: 14px;
+    --shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f1f5f9;
+    color: var(--text);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+/* Top bar */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface);
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+}
+
+.topbar h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.topbar .muted {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 400;
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 1.1rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+.btn-ghost {
+    background: #f1f5f9;
+    color: var(--text);
+}
+
+.btn-ghost:hover {
+    background: #e2e8f0;
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: #fff;
+}
+
+.btn-danger:hover {
+    filter: brightness(0.92);
+}
+
+.btn-sm {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.8rem;
+}
+
+/* Cards grid */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    box-shadow: var(--shadow);
+}
+
+.card .label {
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.card .value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-top: 0.35rem;
+}
+
+.card .value.green {
+    color: var(--success);
+}
+
+.card .value.red {
+    color: var(--danger);
+}
+
+/* Budget bar */
+.budget-bar {
+    height: 10px;
+    background: #e2e8f0;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 0.6rem;
+}
+
+.budget-bar>div {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.4s ease;
+}
+
+/* Alert banner */
+.alert {
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+.alert-danger {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.alert-success {
+    background: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+/* Month nav */
+.month-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 0.5rem 0 1.5rem;
+}
+
+.month-nav strong {
+    font-size: 1.1rem;
+    min-width: 140px;
+    text-align: center;
+}
+
+.month-nav a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Panel + table */
+.panel {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.panel h2 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.6rem 0.5rem;
+    border-bottom: 2px solid var(--border);
+}
+
+td {
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.92rem;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+.pill {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    background: #eef2ff;
+    color: var(--primary-dark);
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 2rem;
+}
+
+/* Toolbar */
+.toolbar {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.toolbar form {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.toolbar input[type=email] {
+    padding: 0.55rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.88rem;
+}
+
+/* Auth pages */
+.auth-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.auth-card {
+    background: var(--surface);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 400px;
+}
+
+.auth-card h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.field {
+    margin-bottom: 1rem;
+}
+
+.field label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+}
+
+.field input {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.95rem;
+}
+
+.field input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.error {
+    color: var(--danger);
+    font-size: 0.8rem;
+    margin-top: 0.3rem;
+}
+
+.auth-card .btn {
+    width: 100%;
+    justify-content: center;
+    margin-top: 0.5rem;
+}
+
+.auth-foot {
+    text-align: center;
+    margin-top: 1.25rem;
+    font-size: 0.88rem;
+    color: var(--muted);
+}
+
+.auth-foot a {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+@media (max-width: 720px) {
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

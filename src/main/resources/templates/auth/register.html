@@ -3,62 +3,37 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Register</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            max-width: 400px;
-            margin: 4em auto;
-        }
-
-        label {
-            display: block;
-            margin-top: 1em;
-            font-weight: bold;
-        }
-
-        input {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-
-        .btn {
-            margin-top: 1em;
-            padding: 10px;
-            width: 100%;
-            background: #16a34a;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .error {
-            color: #dc2626;
-            font-size: 0.9em;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 
 <body>
-    <h1>Create Account</h1>
-    <form th:action="@{/register}" th:object="${registerRequest}" method="post">
-        <label>Name</label>
-        <input type="text" th:field="*{name}">
-        <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
-
-        <label>Email</label>
-        <input type="email" th:field="*{email}">
-        <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
-
-        <label>Password</label>
-        <input type="password" th:field="*{password}">
-        <div class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
-
-        <button type="submit" class="btn">Register</button>
-    </form>
-    <p>Already have an account? <a th:href="@{/login}">Login</a></p>
+    <div class="auth-wrap">
+        <div class="auth-card">
+            <h1>Create your account</h1>
+            <form th:action="@{/register}" th:object="${registerRequest}" method="post">
+                <div class="field">
+                    <label>Name</label>
+                    <input type="text" th:field="*{name}">
+                    <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                </div>
+                <div class="field">
+                    <label>Email</label>
+                    <input type="email" th:field="*{email}">
+                    <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+                <div class="field">
+                    <label>Password</label>
+                    <input type="password" th:field="*{password}">
+                    <div class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                </div>
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+            <p class="auth-foot">Already have an account? <a th:href="@{/login}">Login</a></p>
+        </div>
+    </div>
 </body>
 
 </html>

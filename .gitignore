@@ -3,3 +3,5 @@ target/
 .vscode/
 *.iml
 HELP.md
+.env
+*.log

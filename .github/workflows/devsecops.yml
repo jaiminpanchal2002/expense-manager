@@ -11,6 +11,9 @@ permissions:
 
 jobs:
 
+  # =========================
+  # 1) Secrets Scan
+  # =========================
   secrets-scan:
     name: Secrets Scan (Gitleaks)
     runs-on: ubuntu-latest
@@ -20,10 +23,13 @@ jobs:
 
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
-       continue-on-error: true
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  # =========================
+  # 2) Build & Test
+  # =========================
   build:
     name: Build & Test
     runs-on: ubuntu-latest
@@ -44,6 +50,9 @@ jobs:
       - name: Build with Maven
         run: ./mvnw clean package -DskipTests
 
+  # =========================
+  # 3) Dependency Scan
+  # =========================
   dependency-scan:
     name: Dependency Scan (Trivy)
     runs-on: ubuntu-latest
@@ -60,6 +69,9 @@ jobs:
           exit-code: '0'
           format: table
 
+  # =========================
+  # 4) Docker Security
+  # =========================
   docker-security:
     name: Docker Build Scan & Push
     runs-on: ubuntu-latest
@@ -106,4 +118,11 @@ jobs:
           severity: HIGH,CRITICAL
 
       - name: Push Docker image
-        run: docker push ghcr.io/${{ github.repository }}/expense-manager:latest\
+        run: docker push ghcr.io/${{ github.repository }}/expense-manager:latest
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Sign Docker image
+        run: |
+          cosign sign --yes ghcr.io/${{ github.repository }}/expense-manager:latest

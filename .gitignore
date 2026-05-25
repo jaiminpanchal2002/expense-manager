@@ -1,7 +1,5 @@
-.env
-*.log
 target/
 .idea/
 .vscode/
 *.iml
-HELP.md
+HELP.md.env

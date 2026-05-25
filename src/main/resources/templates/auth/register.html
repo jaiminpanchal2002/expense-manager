@@ -12,6 +12,10 @@
 <body>
     <div class="auth-wrap">
         <div class="auth-card">
+            <div class="brand">
+    <div class="logo">💰</div>
+    <div class="name">Expense Manager</div>
+</div>
             <h1>Create your account</h1>
             <form th:action="@{/register}" th:object="${registerRequest}" method="post">
                 <div class="field">
